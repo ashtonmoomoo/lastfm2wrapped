@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def home(request):
+    """Homepage is a completely static form."""
+    return render(request, 'home.html')
