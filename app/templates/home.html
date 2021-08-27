@@ -12,5 +12,11 @@
 <body>
   <h1>lastfm2wrapped</h1>
   <p>Generate Spotify Wrapped playlists based on your historical last.fm listening data.</p>
+  {% if not is_authed %}
+    <p><a href={{ spotify_url }}>Log into Spotify</a></p>
+    <p></p>
+  {% else %}
+    <p>Nice, now gizzus your last.fm username</p>
+  {% endif %}
 </body>
 </html>
