@@ -90,4 +90,4 @@ class Wrapped:
         self.search_for_spotify_tracks()
         self.create_spotify_playlist()
         success = self.populate_spotify_playlist()
-        return success
+        return success, self.playlist
