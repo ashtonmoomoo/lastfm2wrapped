@@ -29,6 +29,7 @@ def home(request):
     attempted = False
     success = False
     playlist = ''
+    failures = []
     form = forms.YearAndUserNameForm()
 
     if request.method == 'GET':
@@ -56,7 +57,7 @@ def home(request):
 
         attempted = True
         wrapped = services.Wrapped(username, year, SCOPE, access_token)
-        success, playlist = wrapped.create_playlists()
+        success, playlist, failures = wrapped.create_playlists()
 
     context = {
         'spotify_url': make_url(),
@@ -64,7 +65,8 @@ def home(request):
         'success': success,
         'form': form,
         'attempted': attempted,
-        'playlist_link': playlist
+        'playlist_link': playlist,
+        'failures': failures,
     }
 
     return render(request, 'home.html', context=context)

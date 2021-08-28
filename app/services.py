@@ -19,6 +19,7 @@ class Wrapped:
         self.tracks = []
         self.spotify_tracks = []
         self.playlist = ''
+        self.failures = []
 
     def populate_list_for_page(self, page):
 
@@ -73,7 +74,7 @@ class Wrapped:
                 self.spotify_tracks.append(str(uri))
 
             else:
-                print(f'Track not found on Spotify: {track[0]}: {track[1]}')
+                self.failures.append((track[0], track[1]))
 
         return self.spotify_tracks
 
@@ -90,4 +91,4 @@ class Wrapped:
         self.search_for_spotify_tracks()
         self.create_spotify_playlist()
         success = self.populate_spotify_playlist()
-        return success, self.playlist
+        return success, self.playlist, self.failures

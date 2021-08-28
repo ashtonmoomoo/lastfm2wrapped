@@ -36,7 +36,17 @@
         </div>
       </form>
     {% elif attempted and success %}
-      <p>Successfully created playlist. Check it out <a href={{ playlist_link }}>here!</a></p>
+      {% if failures %}
+        <p>Successfully created playlist. You can check it out <a href={{ playlist_link }}>here!</a></br>
+        Unfortunately, we weren't able to find exact matches for {{ failures|length }} song{{ failures|pluralize }}:</p>
+        <ul>
+          {% for failure in failures %}
+            <li><b>{{ failure.0 }}:</b> {{ failure.1 }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Successfully created playlist. You can check it out <a href={{ playlist_link }}>here!</a></p>
+      {% endif %}
     {% endif %}
   </div>
 </body>
