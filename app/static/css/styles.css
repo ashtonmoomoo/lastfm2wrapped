@@ -8,6 +8,15 @@ body {
     padding-top: 2%;
 }
 
+td.field-label {
+    text-align: left;
+}
+
+td.field {
+    text-align: left;
+    padding-left: 10%;
+}
+
 .submit-button {
     text-align: center;
     margin: auto;
