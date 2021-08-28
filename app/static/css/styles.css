@@ -1,0 +1,14 @@
+body {
+    background-color: lightgrey;
+}
+
+.container {
+    max-width: 50%;
+    margin: auto;
+    padding-top: 2%;
+}
+
+.submit-button {
+    text-align: center;
+    margin: auto;
+}

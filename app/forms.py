@@ -5,4 +5,4 @@ class YearAndUserNameForm(forms.Form):
 
     year = forms.IntegerField()
     username = forms.CharField()
-    token = forms.CharField() ## Cheeky
+    token = forms.CharField(widget=forms.HiddenInput()) ## Cheeky
