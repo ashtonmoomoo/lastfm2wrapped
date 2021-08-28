@@ -1,13 +1,9 @@
-import os
-import sys
 import requests
 import math
 from bs4 import BeautifulSoup as bs
 
 import spotipy
-from spotipy import util
 from spotipy import SpotifyException
-from spotipy.oauth2 import SpotifyOAuth
 
 class Wrapped:
     def __init__(self, username, is_own, year, scope, token):

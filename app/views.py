@@ -3,8 +3,9 @@ import requests
 import base64
 import os
 import urllib
-from . import forms
-from . import services
+from .forms import YearAndUserNameForm
+from .services import Wrapped
+from datetime import date
 
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
@@ -24,13 +25,12 @@ def make_url():
     return base + urllib.parse.urlencode(params)
 
 def home(request):
-
     is_authed = False
     attempted = False
     success = False
     playlist = ''
     failures = []
-    form = forms.YearAndUserNameForm()
+    form = YearAndUserNameForm()
 
     if request.method == 'GET':
         if code := request.GET.get('code', ''):
@@ -48,7 +48,7 @@ def home(request):
 
             if (is_authed := response.status_code == 200):
                 access_token = response.json().get('access_token')
-                form = forms.YearAndUserNameForm({'token': access_token, 'year': '2020', 'is_own': True})
+                form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': True})
 
     elif request.method == 'POST':
         username = request.POST.get('username')
@@ -57,7 +57,7 @@ def home(request):
         is_own = request.POST.get('is_own')
 
         attempted = True
-        wrapped = services.Wrapped(username, is_own, year, SCOPE, access_token)
+        wrapped = Wrapped(username, is_own, year, SCOPE, access_token)
         success, playlist, failures = wrapped.create_playlists()
 
     context = {
