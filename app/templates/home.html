@@ -41,6 +41,7 @@
           <input type="submit" value="Wrap it!">
         </div>
       </form>
+      <p><i>This currently takes 20-30 seconds at the moment. Sit tight!</i></p>
     {% elif attempted and success %}
       {% if failures %}
         <p>Successfully created playlist. You can check it out <a href={{ playlist_link }}>here!</a></br>
@@ -56,6 +57,9 @@
         <p>Keen to go <a href="/app/">again?</a></p>
       {% endif %}
     {% endif %}
+    <div class="footer">
+      <p>The creator of this app's last.fm account is <i><a href="https://last.fm/user/ashtonmoore">ashtonmoore</a></i>. You can find the code for this app <a href="https://github.com/ashtonmoomoo/lastfm2wrapped">here.</a></p>
+    </div>
   </div>
 </body>
 </html>

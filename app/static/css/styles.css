@@ -21,3 +21,8 @@ td.field {
     text-align: center;
     margin: auto;
 }
+
+.footer {
+    position: absolute;
+    bottom: 0;
+}
