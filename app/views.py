@@ -47,7 +47,7 @@ def home(request):
 
             if (is_authed := response.status_code == 200):
                 access_token = response.json().get('access_token')
-                form = forms.YearAndUserNameForm({'token': access_token, 'year': 2016})
+                form = forms.YearAndUserNameForm({'token': access_token, 'year': '2020'})
 
     elif request.method == 'POST':
         username = request.POST.get('username')
