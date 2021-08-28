@@ -10,7 +10,7 @@ from spotipy import SpotifyException
 from spotipy.oauth2 import SpotifyOAuth
 
 class Wrapped:
-    def __init__(self, username, year, scope, token):
+    def __init__(self, username, is_own, year, scope, token):
         self.lastfm_username = username
         self.scope = scope
         self.year = year
@@ -20,6 +20,7 @@ class Wrapped:
         self.spotify_tracks = []
         self.playlist = ''
         self.failures = []
+        self.is_own = is_own
 
     def populate_list_for_page(self, page):
 
@@ -56,7 +57,9 @@ class Wrapped:
         return self.tracks
 
     def create_spotify_playlist(self):
-        playlist = self.client.user_playlist_create(self.client.current_user().get('id'), f'Your Top Songs {self.year}', public=True, description='The songs you loved most this year, all wrapped up.')
+        whomst_possessive = 'Your' if self.is_own else self.lastfm_username + '\'s'
+        whomst = 'you' if self.is_own else self.lastfm_username
+        playlist = self.client.user_playlist_create(self.client.current_user().get('id'), f'{whomst_possessive} Top Songs {self.year}', public=True, description=f'The songs {whomst} loved most this year, all wrapped up.')
         self.playlist = str(playlist['uri'])
         return self.playlist
 

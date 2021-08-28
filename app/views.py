@@ -48,15 +48,16 @@ def home(request):
 
             if (is_authed := response.status_code == 200):
                 access_token = response.json().get('access_token')
-                form = forms.YearAndUserNameForm({'token': access_token, 'year': '2020'})
+                form = forms.YearAndUserNameForm({'token': access_token, 'year': '2020', 'is_own': True})
 
     elif request.method == 'POST':
         username = request.POST.get('username')
         year = request.POST.get('year')
         access_token = request.POST.get('token')
+        is_own = request.POST.get('is_own')
 
         attempted = True
-        wrapped = services.Wrapped(username, year, SCOPE, access_token)
+        wrapped = services.Wrapped(username, is_own, year, SCOPE, access_token)
         success, playlist, failures = wrapped.create_playlists()
 
     context = {
