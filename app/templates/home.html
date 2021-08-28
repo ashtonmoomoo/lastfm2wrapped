@@ -14,9 +14,15 @@
   <p>Generate Spotify Wrapped playlists based on your historical last.fm listening data.</p>
   {% if not is_authed %}
     <p><a href={{ spotify_url }}>Log into Spotify</a></p>
-    <p></p>
-  {% else %}
-    <p>Nice, now gizzus your last.fm username</p>
+  {% elif is_authed and not attempted %}
+    <p>Nice, now gizzus your last.fm username and a year</p>
+    <form action="" method="post">
+      {% csrf_token %}
+        <table>
+          {{ form.as_table }}
+        </table>
+      <input type="submit" value="Submit">
+    </form>
   {% endif %}
 </body>
 </html>

@@ -3,6 +3,8 @@ import requests
 import base64
 import os
 import urllib
+from . import forms
+from . import services
 
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
@@ -23,8 +25,10 @@ def make_url():
 
 def home(request):
 
-    error = False
     is_authed = False
+    attempted = False
+    success = False
+    form = forms.YearAndUserNameForm()
 
     if request.method == 'GET':
         if code := request.GET.get('code', ''):
@@ -42,18 +46,23 @@ def home(request):
 
             if (is_authed := response.status_code == 200):
                 access_token = response.json().get('access_token')
+                form = forms.YearAndUserNameForm({'token': access_token})
 
-        elif request.GET.get('error', ''):
-            error = True
+    elif request.method == 'POST':
+        username = request.POST.get('username')
+        year = request.POST.get('year')
+        access_token = request.POST.get('token')
 
-    elif request.method == 'POST' and is_authed:
-        pass
+        attempted = True
+        wrapped = services.Wrapped(username, year, SCOPE, access_token)
+        success = wrapped.create_playlists()
 
     context = {
         'spotify_url': make_url(),
         'is_authed': is_authed,
-        'error': error,
-        'success': False,
+        'success': success,
+        'form': form,
+        'attempted': attempted,
     }
 
     return render(request, 'home.html', context=context)
