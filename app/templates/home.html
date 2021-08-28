@@ -11,11 +11,11 @@
 <body>
   <div class="container">
     <h1>lastfm2wrapped</h1>
-    <p>Generate Spotify Wrapped playlists based on your historical last.fm listening data.</p>
+    <h3>Generate Spotify Wrapped playlists based on your historical last.fm listening data.</h3>
     {% if not is_authed and not success %}
       <p><a href={{ spotify_url }}>Log into Spotify</a></p>
     {% elif is_authed and not attempted %}
-      <p>Nice, now enter a last.fm username and a year to generate the playlist for.
+      <p>Now enter a last.fm username and a year to generate the playlist for.
       If it isn't your last.fm account, uncheck the tickbox. This will change the naming convention of the playlist from
       <b>Your Top Songs <i>year</i></b> to <b>Username's Top Songs <i>year</i></b>.</p>
       <form action="" method="post">
@@ -50,8 +50,10 @@
             <li><b>{{ failure.0 }}:</b> {{ failure.1 }}</li>
           {% endfor %}
         </ul>
+        <p>Keen to go <a href="/app/">again?</a></p>
       {% else %}
         <p>Successfully created playlist. You can check it out <a href={{ playlist_link }}>here!</a></p>
+        <p>Keen to go <a href="/app/">again?</a></p>
       {% endif %}
     {% endif %}
   </div>
