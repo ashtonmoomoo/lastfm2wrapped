@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 # Better not
-lastfm2wrapped/settings.py
 */migrations/
