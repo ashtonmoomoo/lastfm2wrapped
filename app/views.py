@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 import requests
 import base64
 import os
@@ -25,7 +26,7 @@ def make_url():
     return base + urllib.parse.urlencode(params)
 
 def home(request):
-    is_authed = False
+    is_authed = bool(request.COOKIES.get('access_token', ''))
     attempted = False
     success = False
     playlist = ''
@@ -50,6 +51,9 @@ def home(request):
                 access_token = response.json().get('access_token')
                 form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': True})
 
+        elif access_token := request.COOKIES.get('access_token', ''):
+            form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': True})
+
     elif request.method == 'POST':
         username = request.POST.get('username')
         year = request.POST.get('year')
@@ -70,4 +74,9 @@ def home(request):
         'failures': failures,
     }
 
-    return render(request, 'home.html', context=context)
+    response = render(request, 'home.html', context=context)
+
+    if is_authed:
+        response.set_cookie('access_token', access_token, max_age=3600)
+
+    return response
