@@ -26,7 +26,8 @@ def make_url():
     return base + urllib.parse.urlencode(params)
 
 def home(request):
-    is_authed = bool(request.COOKIES.get('access_token', ''))
+    access_token = request.COOKIES.get('access_token', '')
+    is_authed = bool(access_token)
     attempted = False
     success = False
     playlist = ''
@@ -49,15 +50,13 @@ def home(request):
 
             if (is_authed := response.status_code == 200):
                 access_token = response.json().get('access_token')
-                form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': True})
 
         elif access_token := request.COOKIES.get('access_token', ''):
-            form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': True})
+            form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': False})
 
     elif request.method == 'POST':
         username = request.POST.get('username')
         year = request.POST.get('year')
-        access_token = request.POST.get('token')
         is_own = request.POST.get('is_own')
 
         attempted = True

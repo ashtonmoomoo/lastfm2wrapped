@@ -9,4 +9,3 @@ class YearAndUserNameForm(forms.Form):
     year = forms.ChoiceField(choices=years_since_lastfm_started)
     username = forms.CharField()
     is_own = forms.BooleanField(required=False)
-    token = forms.CharField(widget=forms.HiddenInput()) ## Cheeky
