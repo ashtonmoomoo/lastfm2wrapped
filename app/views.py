@@ -11,7 +11,7 @@ from datetime import date
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
 
-REDIRECT_URI = 'http://127.0.0.1:8000/app/'
+REDIRECT_URI = 'http://127.0.0.1:8000/app/' if os.environ.get('DJANGO_DEBUG', '') == 'True' else 'https://lastfm2wrapped.herokuapp.com/app/'
 
 SCOPE = 'playlist-modify-public'
 
