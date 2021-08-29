@@ -26,8 +26,7 @@ def make_url():
     return base + urllib.parse.urlencode(params)
 
 def home(request):
-    access_token = request.COOKIES.get('access_token', '')
-    is_authed = bool(access_token)
+    token = request.COOKIES.get('access_token', '')
     attempted = False
     success = False
     playlist = ''
@@ -36,36 +35,18 @@ def home(request):
 
     if request.method == 'GET':
         if code := request.GET.get('code', ''):
-            data = {
-                'grant_type': 'authorization_code',
-                'code': code,
-                'redirect_uri': REDIRECT_URI
-            }
+            token = get_access_token(code)
 
-            headers = {
-                'Authorization': 'Basic ' + base64.b64encode((CLIENT_ID + ':'+ CLIENT_SECRET).encode('ascii')).decode('ascii')
-            }
+        elif token != '':
+            form = YearAndUserNameForm({'token': token, 'year': str(date.today().year - 1), 'is_own': False})
 
-            response = requests.post('https://accounts.spotify.com/api/token', data=data, headers=headers)
-
-            if (is_authed := response.status_code == 200):
-                access_token = response.json().get('access_token')
-
-        elif access_token := request.COOKIES.get('access_token', ''):
-            form = YearAndUserNameForm({'token': access_token, 'year': str(date.today().year - 1), 'is_own': False})
-
-    elif request.method == 'POST':
-        username = request.POST.get('username')
-        year = request.POST.get('year')
-        is_own = request.POST.get('is_own')
-
+    elif request.method == 'POST' and token != '':
+        success, playlist, failures = make_playlist(request, token)
         attempted = True
-        wrapped = Wrapped(username, is_own, year, SCOPE, access_token)
-        success, playlist, failures = wrapped.create_playlists()
 
     context = {
         'spotify_url': make_url(),
-        'is_authed': is_authed,
+        'is_authed': token != '',
         'success': success,
         'form': form,
         'attempted': attempted,
@@ -75,7 +56,33 @@ def home(request):
 
     response = render(request, 'home.html', context=context)
 
-    if is_authed:
-        response.set_cookie('access_token', access_token, max_age=3600)
+    if token != '':
+        response.set_cookie('access_token', token, max_age=3600)
 
     return response
+
+def get_access_token(code):
+    data = {
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': REDIRECT_URI
+    }
+
+    headers = {
+        'Authorization': 'Basic ' + base64.b64encode((CLIENT_ID + ':'+ CLIENT_SECRET).encode('ascii')).decode('ascii')
+    }
+
+    response = requests.post('https://accounts.spotify.com/api/token', data=data, headers=headers)
+
+    token = ''
+    if response.status_code == 200:
+        token = response.json().get('access_token', '')
+
+    return token
+
+def make_playlist(request, token):
+    username = request.POST.get('username')
+    year = request.POST.get('year')
+    is_own = request.POST.get('is_own')
+
+    return Wrapped(username, is_own, year, SCOPE, token).create_playlists()
